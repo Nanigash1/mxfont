@@ -34,7 +34,7 @@ def setup_args_and_config():
 
     args, left_argv = parser.parse_known_args()
 
-    cfg = Config(*args.config_paths, default="cfgs/defaults.yaml",
+    cfg = Config(*args.config_paths, default="mxfont/cfgs/defaults.yaml",
                  colorize_modified_item=True)
     cfg.argv_update(left_argv)
 

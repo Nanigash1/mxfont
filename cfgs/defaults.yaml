@@ -15,7 +15,7 @@ n_workers: 8
 adam_betas: [0.0, 0.9]
 init: kaiming
 
-language: chn
+language: kz_rus_eng
 decomposition:
 primals:
 
