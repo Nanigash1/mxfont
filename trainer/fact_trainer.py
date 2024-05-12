@@ -244,11 +244,14 @@ class FactTrainer(BaseTrainer):
 
         for _b_comp_id, _logit in zip(binary_comp_ids, ac_logit_c):
             _prob = nn.Softmax(dim=-1)(_logit)  # (n_exp, n_comp)
-            T_probs = _prob.T[_b_comp_id].detach().cpu()  # (n_T, n_exp)
+            T_probs = _prob.T[_b_comp_id]  # убираем .detach().cpu()
             cids, eids = expert_assign(T_probs)
+            cids = cids.to(_logit.device)  # перемещаем cids на устройство _logit
+            eids = eids.to(_logit.device)  # перемещаем eids на устройство _logit
             _max_ids = torch.where(_b_comp_id)[0][cids]
-            ac_loss_c += F.cross_entropy(_logit[eids], _max_ids)
+            ac_loss_c += F.cross_entropy(_logit[eids], _max_ids.to(_logit.device))  # удостоверяемся, что _max_ids на правильном устройстве
             acc = T_probs[cids, eids].sum() / n_experts
+
             accs += acc
 
         ac_loss_c /= B

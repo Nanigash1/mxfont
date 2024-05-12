@@ -2,7 +2,7 @@ use_ddp: False   # whether to use DataDistributedParallel, for multi-gpus.
 port:   # the port for the DataDistributedParallel training.
 
 resume:
-work_dir: /result   # the directory to save checkpoints, validation images, and the log.
+work_dir: mxfont/result   # the directory to save checkpoints, validation images, and the log.
 
 decomposition: mxfont/data/kz_decomposition.json  # path to the "decomposition rule" file.
 primals: mxfont/data/kz_primals.json   # path to the "primals" file.

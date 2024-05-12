@@ -84,8 +84,10 @@ def binarize_labels(label_ids, n_labels):
 
 
 def expert_assign(prob_org):
+    # Убеждаемся, что тензор не требует градиентов и находится на CPU
     n_comp, n_exp = prob_org.shape
-    neg_prob = -prob_org.T if n_comp < n_exp else -prob_org
+    prob_org_cpu = prob_org.detach().cpu().numpy()  # Отсоединяем, перемещаем на CPU и конвертируем в numpy
+    neg_prob = -prob_org_cpu.T if n_comp < n_exp else -prob_org_cpu
     n_row, n_col = neg_prob.shape
 
     prob_in = neg_prob
@@ -104,7 +106,8 @@ def expert_assign(prob_org):
     cat_selected_rs = np.concatenate(selected_cs) if n_comp < n_exp else np.concatenate(selected_rs)
     cat_selected_cs = np.concatenate(selected_rs) if n_comp < n_exp else np.concatenate(selected_cs)
 
-    cat_selected_rs = torch.LongTensor(cat_selected_rs).cuda()
-    cat_selected_cs = torch.LongTensor(cat_selected_cs).cuda()
+    # Конвертируем обратно в PyTorch тензоры и перемещаем на исходное устройство
+    cat_selected_rs = torch.LongTensor(cat_selected_rs).to(prob_org.device)
+    cat_selected_cs = torch.LongTensor(cat_selected_cs).to(prob_org.device)
 
     return cat_selected_rs, cat_selected_cs
