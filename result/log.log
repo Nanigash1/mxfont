@@ -1,0 +1,800 @@
+[37m[36mINFO[0m[0m::05/11 23:48:45 | Run Argv:
+> train.py cfgs/train.yaml
+[37m[36mINFO[0m[0m::05/11 23:48:45 | Args:
+config_paths = ['cfgs/train.yaml']
+[37m[36mINFO[0m[0m::05/11 23:48:45 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/11 23:48:45 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 14:44:00 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 14:44:00 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 14:44:00 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 14:44:00 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 14:50:45 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 14:50:45 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 14:50:45 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 14:50:45 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 14:50:53 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 14:50:53 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 14:50:53 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 14:50:53 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 14:50:53 | Build model ...
+[37m[36mINFO[0m[0m::05/12 14:50:59 | Start training ...
+[37m[36mINFO[0m[0m::05/12 15:35:06 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 15:35:06 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 15:35:06 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 15:35:06 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 15:35:06 | Build model ...
+[37m[36mINFO[0m[0m::05/12 15:35:11 | Start training ...
+[37m[36mINFO[0m[0m::05/12 15:38:03 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 15:38:03 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 15:38:03 | Configs:
+use_ddp: False
+port: None
+batch_size: 2
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 15:38:03 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 15:38:03 | Build model ...
+[37m[36mINFO[0m[0m::05/12 15:38:07 | Start training ...
+[37m[36mINFO[0m[0m::05/12 15:45:50 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 15:45:50 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 15:45:50 | Configs:
+use_ddp: False
+port: None
+batch_size: 1
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 15:45:50 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 15:46:37 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 15:46:37 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 15:46:37 | Configs:
+use_ddp: False
+port: None
+batch_size: 2
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTextb.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 15:46:37 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 15:48:08 | Run Argv:
+> train.py cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/12 15:48:08 | Args:
+config_paths = ['cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/12 15:48:08 | Configs:
+use_ddp: False
+port: None
+batch_size: 2
+resume: None
+force_resume: False
+work_dir: result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: chn
+decomposition: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_decomposition.json
+primals: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/chn_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val
+    n_ref: 4
+    source_font: C:/Users/Timing/Desktop/Diploma_Product/mxfont-main/data/ttfs/val/vTrueg.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+gpu: -1
+[37m[36mINFO[0m[0m::05/12 15:48:08 | Get dataset ...
+[37m[36mINFO[0m[0m::05/12 15:48:08 | Build model ...
+[37m[36mINFO[0m[0m::05/12 15:48:13 | Start training ...

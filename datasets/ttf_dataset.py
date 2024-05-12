@@ -215,11 +215,35 @@ def load_data_list(data_dir, char_filter=None):
         font = read_font(font_path)
         key_font_dict[font_path.stem] = font
 
-        with open(str(font_path).replace(".ttf", ".txt")) as f:
-            chars = f.read()
+        # Список кодировок для проверки
+        encodings_to_try = ["utf-8", "latin-1", "cp1252", "ascii"]
 
+        for encoding in encodings_to_try:
+            try:
+                with open(str(font_path).replace(".ttf", ".txt"), encoding=encoding) as f:
+                    chars = f.read()
+                    # Проверяем, что файл содержит данные
+                    if not chars:
+                        raise ValueError("Файл не содержит данных")
+                # Если успешно прочитано, выходим из цикла
+                break
+            except UnicodeDecodeError:
+                # Если возникла ошибка декодирования, пробуем следующую кодировку
+                continue
+            except ValueError as e:
+                # Перехватываем исключение, если файл пуст
+                print(f"Внимание: {e}")
+                break
+        else:
+            # Если ни одна кодировка не работает, генерируем исключение
+            raise ValueError("Не удалось прочитать файл с использованием доступных кодировок")
+        english_chars = list(range(65, 91)) + list(range(97, 123)) # A-Z, a-z
+        russian_chars = list(range(0x0410, 0x0450))+[0x0401, 0x0451]  # А-я
+        kazakh_chars = [0x04D8, 0x04D9, 0x0492, 0x0493, 0x049A, 0x049B, 0x04A2, 0x04A3, 0x04E8, 0x04E9, 0x04B0, 0x04B1, 0x04AE, 0x04AF, 0x04BA, 0x04BB, 0x0406, 0x0456]
+        char_filter = [chr(i) for i in english_chars+russian_chars+kazakh_chars]
         if char_filter is not None:
             chars = set(chars).intersection(char_filter)
         key_char_dict[font_path.stem] = list(chars)
 
     return key_font_dict, key_char_dict
+
