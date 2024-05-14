@@ -1,7 +1,7 @@
 use_ddp: False
-port: 
+port:
 
-batch_size: 16
+batch_size: 8
 
 resume: 
 force_resume: False
@@ -11,7 +11,7 @@ seed: 2
 g_lr: 2e-4
 d_lr: 1e-3
 ac_lr: 2e-4
-n_workers: 2
+n_workers: 8
 adam_betas: [0.0, 0.9]
 init: kaiming
 
@@ -46,7 +46,7 @@ g_args:
     pad_type: zero
     skip_scale_var: False
   experts:
-    n_experts: 2
+    n_experts: 6
     norm: in
     activ: relu
     pad_type: zero
@@ -85,6 +85,6 @@ indp_fact_w: 1.0
 # etc
 save: all-last
 print_freq: 1000
-val_freq: 1000
-save_freq: 5000
+val_freq: 10000
+save_freq: 50000
 tb_freq: 100

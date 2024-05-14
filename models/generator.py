@@ -40,6 +40,14 @@ class Generator(nn.Module):
         self.decoder = dec_builder(
             C, C_out, **dec, n_experts=self.n_experts
         )
+    def base_parameters(self):
+    # Возвращаем параметры style_encoder как базовые
+        return self.style_enc.parameters()
+
+    def new_parameters(self):
+        # Возвращаем параметры decoder как новые
+        return self.decoder.parameters()
+
 
     def encode(self, img):
         feats = self.style_enc(img)

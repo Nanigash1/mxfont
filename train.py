@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 import argparse
 
+import os
+
 import torch
 
 import torch.optim as optim
@@ -90,9 +92,19 @@ def train_ddp(gpu, args, cfg, world_size):
 
 
 def train(args, cfg, ddp_gpu=-1):
+    if ddp_gpu == -1:
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+            torch.cuda.set_device(0)  # Используйте индекс 0 для установки устройства по умолчанию
+            cudnn.benchmark = True
+        else:
+            device = torch.device("cpu")
+    else:
+        device = torch.device(f'cuda:{ddp_gpu}')
+        torch.cuda.set_device(ddp_gpu)
+        cudnn.benchmark = True
+
     cfg.gpu = ddp_gpu
-    torch.cuda.set_device(ddp_gpu)
-    cudnn.benchmark = True
 
     logger_path = cfg.work_dir / "log.log"
     logger = Logger.get(file_path=logger_path, level="info", colorize=True)
@@ -116,55 +128,61 @@ def train(args, cfg, ddp_gpu=-1):
     decomposition = json.load(open(cfg.decomposition, encoding='utf-8'))
     n_comps = len(primals)
 
-    trn_dset, trn_loader = get_trn_loader(cfg.dset.train,
-                                          primals,
-                                          decomposition,
-                                          trn_transform,
-                                          use_ddp=cfg.use_ddp,
+    trn_dset, trn_loader = get_trn_loader(cfg.dset.train, primals, decomposition,
+                                          trn_transform, use_ddp=cfg.use_ddp,
                                           batch_size=cfg.batch_size,
                                           num_workers=cfg.n_workers,
                                           shuffle=True)
 
-    test_dset, test_loader = get_val_loader(cfg.dset.val,
-                                            val_transform,
+    test_dset, test_loader = get_val_loader(cfg.dset.val, val_transform,
                                             batch_size=cfg.batch_size,
                                             num_workers=cfg.n_workers,
                                             shuffle=False)
 
     logger.info("Build model ...")
-    # generator
     g_kwargs = cfg.get("g_args", {})
     gen = Generator(1, cfg.C, 1, **g_kwargs)
-    gen.cuda()
+    gen.to(device)
     gen.apply(weights_init(cfg.init))
+
+    if cfg.pretrained and os.path.exists(cfg.pretrained_path):
+        gen.load_state_dict(torch.load(cfg.pretrained_path, map_location=device), strict=False)
+        logger.info("Loaded pretrained weights from {}".format(cfg.pretrained_path))
+
+        g_optim = optim.Adam([
+            {'params': gen.base_parameters(), 'lr': cfg.g_lr * 0.1},
+            {'params': gen.new_parameters(), 'lr': cfg.g_lr}
+        ], betas=cfg.adam_betas)
+    else:
+        g_optim = optim.Adam(gen.parameters(), lr=cfg.g_lr, betas=cfg.adam_betas)
 
     d_kwargs = cfg.get("d_args", {})
     disc = disc_builder(cfg.C, trn_dset.n_fonts, trn_dset.n_chars, **d_kwargs)
-    disc.cuda()
+    disc.to(device)
     disc.apply(weights_init(cfg.init))
 
     aux_clf = aux_clf_builder(gen.feat_shape["last"], trn_dset.n_fonts, n_comps, **cfg.ac_args)
-    aux_clf.cuda()
+    aux_clf.to(device)
     aux_clf.apply(weights_init(cfg.init))
 
-    g_optim = optim.Adam(gen.parameters(), lr=cfg.g_lr, betas=cfg.adam_betas)
     d_optim = optim.Adam(disc.parameters(), lr=cfg.d_lr, betas=cfg.adam_betas)
     ac_optim = optim.Adam(aux_clf.parameters(), lr=cfg.ac_lr, betas=cfg.adam_betas)
 
     st_step = 0
     if cfg.resume:
-        st_step, loss = load_checkpoint(cfg.resume, gen, disc, aux_clf, g_optim, d_optim, ac_optim, cfg.force_resume)
-        logger.info("Resumed checkpoint from {} (Step {}, Loss {:7.3f})".format(cfg.resume, st_step, loss))
+        if os.path.exists(cfg.resume):
+            st_step, loss = load_checkpoint(cfg.resume, gen, disc, aux_clf, g_optim, d_optim, ac_optim, cfg.force_resume)
+            logger.info("Resumed checkpoint from {} (Step {}, Loss {:7.3f})".format(cfg.resume, st_step, loss))
+        else:
+            logger.error(f"Checkpoint file {cfg.resume} not found")
 
     evaluator = Evaluator(writer)
 
-    trainer = FactTrainer(gen, disc, g_optim, d_optim,
-                          aux_clf, ac_optim,
-                          writer, logger,
-                          evaluator, test_loader,
-                          cfg)
+    trainer = FactTrainer(gen, disc, g_optim, d_optim, aux_clf, ac_optim, writer, logger,
+                          evaluator, test_loader, cfg)
 
     trainer.train(trn_loader, st_step, cfg.max_iter)
+
 
 
 def main():

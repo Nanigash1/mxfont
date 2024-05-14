@@ -23,7 +23,7 @@ def eval_ckpt():
     parser.add_argument("--result_dir", help="path to save the result file")
     args, left_argv = parser.parse_known_args()
 
-    cfg = Config(*args.config_paths, default="cfgs/defaults.yaml")
+    cfg = Config(*args.config_paths, default="mxfont/cfgs/defaults.yaml")
     cfg.argv_update(left_argv)
     img_dir = Path(args.result_dir)
     img_dir.mkdir(parents=True, exist_ok=True)

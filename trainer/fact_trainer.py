@@ -16,6 +16,8 @@ import utils
 from itertools import combinations
 
 
+import torch
+
 class FactTrainer(BaseTrainer):
     def __init__(self, gen, disc, g_optim, d_optim, aux_clf, ac_optim,
                  writer, logger, evaluator, test_loader, cfg):
@@ -56,16 +58,16 @@ class FactTrainer(BaseTrainer):
             if self.cfg.use_ddp and (self.step % len(loader)) == 0:
                 loader.sampler.set_epoch(epoch)
 
-            style_imgs = batch["style_imgs"].cuda()
-            style_fids = batch["style_fids"].cuda()
+            style_imgs = batch["style_imgs"].to(self.device)
+            style_fids = batch["style_fids"].to(self.device)
             style_decs = batch["style_decs"]
-            char_imgs = batch["char_imgs"].cuda()
-            char_fids = batch["char_fids"].cuda()
+            char_imgs = batch["char_imgs"].to(self.device)
+            char_fids = batch["char_fids"].to(self.device)
             char_decs = batch["char_decs"]
 
-            trg_imgs = batch["trg_imgs"].cuda()
-            trg_fids = batch["trg_fids"].cuda()
-            trg_cids = batch["trg_cids"].cuda()
+            trg_imgs = batch["trg_imgs"].to(self.device)
+            trg_fids = batch["trg_fids"].to(self.device)
+            trg_cids = batch["trg_cids"].to(self.device)
             trg_decs = batch["trg_decs"]
 
             ##############################################################
@@ -91,7 +93,7 @@ class FactTrainer(BaseTrainer):
                 [style_facts_s["skip"], style_facts_c["skip"]],
                 [char_facts_s["last"], char_facts_c["last"]],
                 [char_facts_s["skip"], char_facts_c["skip"]],
-                                  )
+            )
 
             mean_style_facts = {k: utils.add_dim_and_reshape(v, 0, (-1, n_s)).mean(1) for k, v in style_facts_s.items()}
             mean_char_facts = {k: utils.add_dim_and_reshape(v, 0, (-1, n_c)).mean(1) for k, v in char_facts_c.items()}
@@ -233,25 +235,22 @@ class FactTrainer(BaseTrainer):
 
         n_s = ac_logit_s_flat.shape[-1]
         ac_prob_s_flat = nn.Softmax(dim=-1)(ac_logit_s_flat)
-        uniform_dist_s = torch.zeros_like(ac_prob_s_flat).fill_((1./n_s)).cuda()
+        uniform_dist_s = torch.zeros_like(ac_prob_s_flat).fill_((1./n_s)).to(self.device)
         uniform_loss_s = F.kl_div(ac_prob_s_flat, uniform_dist_s, reduction="batchmean")  # causes increasing weight norm ; to be modified
 
         ac_logit_c = ac_logit_c_flat.reshape((B, n_experts, -1))  # (bs, n_exp, n_comps)
         n_comps = ac_logit_c.shape[-1]
-        binary_comp_ids = binarize_labels(comp_ids, n_comps).cuda()
-        ac_loss_c = torch.as_tensor(0.).cuda()
+        binary_comp_ids = binarize_labels(comp_ids, n_comps).to(self.device)
+        ac_loss_c = torch.as_tensor(0.).to(self.device)
         accs = 0.
 
         for _b_comp_id, _logit in zip(binary_comp_ids, ac_logit_c):
             _prob = nn.Softmax(dim=-1)(_logit)  # (n_exp, n_comp)
-            T_probs = _prob.T[_b_comp_id]  # убираем .detach().cpu()
+            T_probs = _prob.T[_b_comp_id].detach().cpu()  # (n_T, n_exp)
             cids, eids = expert_assign(T_probs)
-            cids = cids.to(_logit.device)  # перемещаем cids на устройство _logit
-            eids = eids.to(_logit.device)  # перемещаем eids на устройство _logit
             _max_ids = torch.where(_b_comp_id)[0][cids]
-            ac_loss_c += F.cross_entropy(_logit[eids], _max_ids.to(_logit.device))  # удостоверяемся, что _max_ids на правильном устройстве
+            ac_loss_c += F.cross_entropy(_logit[eids], _max_ids)
             acc = T_probs[cids, eids].sum() / n_experts
-
             accs += acc
 
         ac_loss_c /= B
@@ -269,7 +268,7 @@ class FactTrainer(BaseTrainer):
 
         n_c = ac_logit_c_flat.shape[-1]
         ac_prob_c_flat = nn.Softmax(dim=-1)(ac_logit_c_flat)
-        uniform_dist_c = torch.zeros_like(ac_prob_c_flat).fill_((1./n_c)).cuda()
+        uniform_dist_c = torch.zeros_like(ac_prob_c_flat).fill_((1./n_c)).to(self.device)
         uniform_loss_c = F.kl_div(ac_prob_c_flat, uniform_dist_c, reduction="batchmean")  # causes increasing weight norm ; to be modified
 
         _, est_ids = ac_logit_s_flat.max(dim=-1)

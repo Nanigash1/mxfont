@@ -16,18 +16,21 @@ from .criterions import g_crit, d_crit, fm_crit
 from pathlib import Path
 
 
+
 class BaseTrainer:
     def __init__(self, gen, disc, g_optim, d_optim, aux_clf, ac_optim,
                  writer, logger, evaluator, test_loader, cfg):
-        self.gen = gen
-        self.gen_ema = copy.deepcopy(self.gen)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        self.gen = gen.to(self.device)
+        self.gen_ema = copy.deepcopy(self.gen).to(self.device)
         self.g_optim = g_optim
 
         self.is_bn_gen = has_bn(self.gen)
-        self.disc = disc
+        self.disc = disc.to(self.device)
         self.d_optim = d_optim
 
-        self.aux_clf = aux_clf
+        self.aux_clf = aux_clf.to(self.device)
         self.ac_optim = ac_optim
 
         self.cfg = cfg
@@ -193,7 +196,7 @@ class BaseTrainer:
                 log += " and symlink to {}".format(last_ckpt_path)
 
         if not step_save and last_save:
-            utils.rm(last_ckpt_path)  # last 가 symlink 일 경우 지우고 써줘야 함.
+            utils.rm(last_ckpt_path)  # last is symlink일 경우 지우고 써줘야 함.
             torch.save(save_dic, str(last_ckpt_path))
             log = "Checkpoint is saved to {}".format(last_ckpt_path)
 

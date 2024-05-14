@@ -1,0 +1,562 @@
+[37m[36mINFO[0m[0m::05/14 14:20:11 | Run Argv:
+> mxfont/train.py mxfont/cfgs/train.yaml
+[37m[36mINFO[0m[0m::05/14 14:20:11 | Args:
+config_paths = ['mxfont/cfgs/train.yaml']
+[37m[36mINFO[0m[0m::05/14 14:20:11 | Configs:
+use_ddp: False
+port: None
+batch_size: 1
+resume: None
+force_resume: False
+work_dir: mxfont\result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: kz_rus_eng
+decomposition: mxfont/data/kz_decomposition.json
+primals: mxfont/data/kz_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: mxfont/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: mxfont/data/ttfs/val
+    n_ref: 4
+    source_font: mxfont/data/ttfs/val/vTrueg.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+pretrained: False
+pretrained_path: mxfont/generator1.pth
+gpu: -1
+[37m[36mINFO[0m[0m::05/14 14:20:11 | Get dataset ...
+[37m[36mINFO[0m[0m::05/14 14:20:18 | Build model ...
+[37m[36mINFO[0m[0m::05/14 14:20:24 | Start training ...
+[37m[36mINFO[0m[0m::05/14 14:21:24 | Step       0
+|D             3.996 |G             0.078 |FM            0.204 |R_font        1.000 |F_font        0.000 |R_uni         0.000 |F_uni         1.000
+|AC_s          9.267 |AC_c          6.014 |cr_AC_s      -4.920 |cr_AC_c      -5.743 |AC_acc_s       0.0% |AC_acc_c       1.8%
+|AC_g_s        9.965 |AC_g_c        6.226 |cr_AC_g_s    -4.920 |cr_AC_g_c    -5.743 |AC_g_acc_s     0.0% |AC_g_acc_c     2.8%
+|L1            0.127 |INDP_EXP     0.1306 |INDP_FACT       nan
+[37m[36mINFO[0m[0m::05/14 14:30:03 | Run Argv:
+> mxfont/train.py mxfont/cfgs/train.yaml
+[37m[36mINFO[0m[0m::05/14 14:30:03 | Args:
+config_paths = ['mxfont/cfgs/train.yaml']
+[37m[36mINFO[0m[0m::05/14 14:30:03 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: mxfont\result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: kz_rus_eng
+decomposition: mxfont/data/kz_decomposition.json
+primals: mxfont/data/kz_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: mxfont/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: mxfont/data/ttfs/val
+    n_ref: 4
+    source_font: mxfont/data/ttfs/val/vTrueg.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+pretrained: False
+pretrained_path: mxfont/generator1.pth
+gpu: -1
+[37m[36mINFO[0m[0m::05/14 14:30:03 | Get dataset ...
+[37m[36mINFO[0m[0m::05/14 14:30:03 | Build model ...
+[37m[36mINFO[0m[0m::05/14 14:30:08 | Start training ...
+[37m[36mINFO[0m[0m::05/14 15:16:54 | Run Argv:
+> mxfont\train.py mxfont\cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/14 15:16:54 | Args:
+config_paths = ['mxfont\\cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/14 15:16:54 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: mxfont\result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: kz_rus_eng
+decomposition: mxfont/data/kz_decomposition.json
+primals: mxfont/data/kz_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: mxfont/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: mxfont/data/ttfs/val
+    n_ref: 4
+    source_font: mxfont/data/ttfs/val/vTrueg.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+pretrained: False
+pretrained_path: mxfont/generator1.pth
+gpu: -1
+[37m[36mINFO[0m[0m::05/14 15:16:54 | Get dataset ...
+[37m[36mINFO[0m[0m::05/14 15:16:55 | Build model ...
+[37m[36mINFO[0m[0m::05/14 15:17:00 | Start training ...
+[37m[36mINFO[0m[0m::05/14 15:19:18 | Run Argv:
+> mxfont\train.py mxfont\cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/14 15:19:18 | Args:
+config_paths = ['mxfont\\cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/14 15:19:18 | Configs:
+use_ddp: False
+port: None
+batch_size: 8
+resume: None
+force_resume: False
+work_dir: mxfont\result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: kz_rus_eng
+decomposition: mxfont/data/kz_decomposition.json
+primals: mxfont/data/kz_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: mxfont/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: mxfont/data/ttfs/val
+    n_ref: 4
+    source_font: mxfont/data/ttfs/val/vTrueg.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+pretrained: False
+pretrained_path: mxfont/generator1.pth
+gpu: -1
+[37m[36mINFO[0m[0m::05/14 15:19:18 | Get dataset ...
+[37m[36mINFO[0m[0m::05/14 15:19:19 | Build model ...
+[37m[36mINFO[0m[0m::05/14 15:19:22 | Start training ...
+[37m[36mINFO[0m[0m::05/14 15:27:30 | Run Argv:
+> mxfont\train.py mxfont\cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/14 15:27:30 | Args:
+config_paths = ['mxfont\\cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/14 15:27:30 | Configs:
+use_ddp: False
+port: None
+batch_size: 2
+resume: None
+force_resume: False
+work_dir: mxfont\result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: kz_rus_eng
+decomposition: mxfont/data/kz_decomposition.json
+primals: mxfont/data/kz_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: mxfont/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: mxfont/data/ttfs/val
+    n_ref: 4
+    source_font: mxfont/data/ttfs/val/vTrueg.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+pretrained: False
+pretrained_path: mxfont/generator1.pth
+gpu: -1
+[37m[36mINFO[0m[0m::05/14 15:27:30 | Get dataset ...
+[37m[36mINFO[0m[0m::05/14 15:27:30 | Build model ...
+[37m[36mINFO[0m[0m::05/14 15:27:34 | Start training ...
+[37m[36mINFO[0m[0m::05/14 15:31:39 | Run Argv:
+> mxfont\train.py mxfont\cfgs\train.yaml
+[37m[36mINFO[0m[0m::05/14 15:31:39 | Args:
+config_paths = ['mxfont\\cfgs\\train.yaml']
+[37m[36mINFO[0m[0m::05/14 15:31:39 | Configs:
+use_ddp: False
+port: None
+batch_size: 1
+resume: None
+force_resume: False
+work_dir: mxfont\result
+max_iter: 800000
+seed: 2
+g_lr: 0.0002
+d_lr: 0.001
+ac_lr: 0.0002
+n_workers: 8
+adam_betas: 
+  - 0.0
+  - 0.9
+init: kaiming
+language: kz_rus_eng
+decomposition: mxfont/data/kz_decomposition.json
+primals: mxfont/data/kz_primals.json
+dset_aug: 
+  normalize: True
+  random_affine: False
+dset: 
+  train: 
+    data_dir: mxfont/data/ttfs/train
+    n_in_s: 3
+    n_in_c: 3
+  val: 
+    data_dir: mxfont/data/ttfs/val
+    n_ref: 4
+    source_font: mxfont/data/ttfs/val/vTrueg.ttf
+  test: 
+    data_dir: None
+    source_font: None
+    gen_chars_file: None
+C: 32
+g_args: 
+  style_enc: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  experts: 
+    n_experts: 6
+    norm: in
+    activ: relu
+    pad_type: zero
+    skip_scale_var: False
+  emb_num: 2
+  dec: 
+    norm: in
+    activ: relu
+    pad_type: zero
+    out: sigmoid
+d_args: 
+  w_norm: spectral
+  activ: relu
+  gap_activ: relu
+  pad_type: zero
+  res_scale_var: False
+ac_args: 
+  norm: in
+  activ: relu
+  pad_type: zero
+  conv_dropout: 0.3
+  clf_dropout: 0.2
+pixel_loss_type: l1
+pixel_w: 0.1
+gan_w: 1.0
+fm_layers: all
+fm_w: 1.0
+ac_w: 1.0
+ac_gen_w: 1.0
+ac_cross_w: 1.0
+indp_exp_w: 1.0
+indp_fact_w: 1.0
+save: all-last
+print_freq: 1000
+val_freq: 10000
+save_freq: 50000
+tb_freq: -1
+pretrained: False
+pretrained_path: mxfont/generator1.pth
+gpu: -1
+[37m[36mINFO[0m[0m::05/14 15:31:39 | Get dataset ...
+[37m[36mINFO[0m[0m::05/14 15:31:39 | Build model ...
+[37m[36mINFO[0m[0m::05/14 15:31:44 | Start training ...
+[37m[36mINFO[0m[0m::05/14 15:32:37 | Step       0
+|D             3.874 |G            -0.089 |FM            0.199 |R_font        1.000 |F_font        0.000 |R_uni         1.000 |F_uni         0.000
+|AC_s          9.116 |AC_c          6.206 |cr_AC_s      -4.920 |cr_AC_c      -5.743 |AC_acc_s       0.0% |AC_acc_c       0.9%
+|AC_g_s        9.604 |AC_g_c        6.096 |cr_AC_g_s    -4.920 |cr_AC_g_c    -5.743 |AC_g_acc_s     0.0% |AC_g_acc_c     3.1%
+|L1            0.126 |INDP_EXP     0.2563 |INDP_FACT       nan

@@ -7,6 +7,9 @@ work_dir: mxfont/result   # the directory to save checkpoints, validation images
 decomposition: mxfont/data/kz_decomposition.json  # path to the "decomposition rule" file.
 primals: mxfont/data/kz_primals.json   # path to the "primals" file.
 
+pretrained: False
+pretrained_path: mxfont/generator1.pth
+
 dset:   # leave blank
   train:   # leave blank
     data_dir: mxfont/data/ttfs/train   # path to .ttf files for the training

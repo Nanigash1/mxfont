@@ -21,7 +21,7 @@ class ImageTestDataset(Dataset):
         self.source_font = read_font(source_font)
         self.gen_chars = get_filtered_chars(source_font)
         if gen_chars_file is not None:
-            gen_chars = json.load(open(gen_chars_file))
+            gen_chars = json.load(open(gen_chars_file, encoding='utf-8'))
             self.gen_chars = list(set(self.gen_chars).intersection(set(gen_chars)))
 
         self.font_ref_chars = self.load_data_list(self.data_dir, extension)
