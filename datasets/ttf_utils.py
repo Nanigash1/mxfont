@@ -36,7 +36,9 @@ def read_font(fontfile, size=150):
 
 
 def render(font, char, size=(128, 128), pad=20):
-    width, height = font.getsize(char)
+    # Get the bounding box of the character
+    bbox = font.getbbox(char)
+    width, height = bbox[2] - bbox[0], bbox[3] - bbox[1]
     max_size = max(width, height)
 
     if width < height:
@@ -46,8 +48,9 @@ def render(font, char, size=(128, 128), pad=20):
         start_w = pad
         start_h = (width - height) // 2 + pad
 
-    img = Image.new("L", (max_size+(pad*2), max_size+(pad*2)), 255)
+    img = Image.new("L", (max_size + (pad * 2), max_size + (pad * 2)), 255)
     draw = ImageDraw.Draw(img)
     draw.text((start_w, start_h), char, font=font)
     img = img.resize(size, 2)
     return img
+

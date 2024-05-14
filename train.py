@@ -8,11 +8,13 @@ import json
 import sys
 from pathlib import Path
 import argparse
+import numpy as np
+import time
+from tqdm import tqdm
 
 import os
 
 import torch
-
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
@@ -181,8 +183,47 @@ def train(args, cfg, ddp_gpu=-1):
     trainer = FactTrainer(gen, disc, g_optim, d_optim, aux_clf, ac_optim, writer, logger,
                           evaluator, test_loader, cfg)
 
-    trainer.train(trn_loader, st_step, cfg.max_iter)
+    # Early stopping parameters
+    early_stopping_patience = cfg.get('early_stopping', {}).get('patience', 5)
+    early_stopping_min_delta = cfg.get('early_stopping', {}).get('min_delta', 0.001)
+    best_val_loss = float('inf')
+    patience_counter = 0
 
+    # Progress bar setup
+    total_steps = cfg.max_iter
+    with tqdm(total=total_steps, desc='Training Progress', unit='step') as pbar:
+        for current_step in range(st_step, total_steps):
+            start_time = time.time()
+            trainer.train(trn_loader, current_step, current_step + 1)
+            end_time = time.time()
+
+            elapsed_time = end_time - start_time
+            estimated_time_remaining = (total_steps - current_step - 1) * elapsed_time
+
+            pbar.set_postfix({
+                'Elapsed Time': f'{elapsed_time:.2f}s',
+                'ETA': f'{estimated_time_remaining / 3600:.2f}h'
+            })
+            pbar.update(1)
+
+            if current_step > 0 and current_step % cfg.save_freq == 0:
+                trainer.save(current_step)
+
+            if current_step > 0 and current_step % cfg.val_freq == 0:
+                val_loss = trainer.validate(current_step)
+
+                # Early stopping logic
+                if val_loss < best_val_loss - early_stopping_min_delta:
+                    best_val_loss = val_loss
+                    patience_counter = 0
+                else:
+                    patience_counter += 1
+
+                if patience_counter >= early_stopping_patience:
+                    logger.info(f"Early stopping triggered at step {current_step}.")
+                    break
+
+    logger.info("Training completed!")
 
 
 def main():
