@@ -1,7 +1,7 @@
 use_ddp: False
 port:
 
-batch_size: 4
+batch_size: 8
 
 resume: 
 force_resume: False
@@ -46,7 +46,7 @@ g_args:
     pad_type: zero
     skip_scale_var: False
   experts:
-    n_experts: 6
+    n_experts: 4
     norm: in
     activ: relu
     pad_type: zero
@@ -84,7 +84,7 @@ indp_fact_w: 1.0
 
 # etc
 save: all-last
-print_freq: 1000
-val_freq: 1000
-save_freq: 5000
+print_freq: 10
+val_freq: 10
+save_freq: 10
 tb_freq: 1
