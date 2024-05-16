@@ -1,0 +1,10 @@
+sconf
+numpy
+scipy
+scikit-image
+tqdm
+jsonlib-python3
+fonttools
+os
+tensorflow
+tensorboard
