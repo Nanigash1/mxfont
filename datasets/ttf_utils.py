@@ -35,22 +35,28 @@ def read_font(fontfile, size=150):
     return font
 
 
-def render(font, char, size=(128, 128), pad=20):
-    # Get the bounding box of the character
-    bbox = font.getbbox(char)
-    width, height = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    max_size = max(width, height)
+def render(font, char, size=(128, 128), pad=20, bottom_pad=20, scale=0.55):
+    # Масштабируем размер шрифта
+    font_size = int(font.size * scale)
+    font = ImageFont.truetype(font.path, font_size)
 
-    if width < height:
-        start_w = (height - width) // 2 + pad
-        start_h = pad
-    else:
-        start_w = pad
-        start_h = (width - height) // 2 + pad
-
-    img = Image.new("L", (max_size + (pad * 2), max_size + (pad * 2)), 255)
+    # Создаем изображение с достаточным пространством для центрирования текста
+    img = Image.new("L", (size[0] + 2*pad, size[1] + pad + bottom_pad), 255)
     draw = ImageDraw.Draw(img)
-    draw.text((start_w, start_h), char, font=font)
-    img = img.resize(size, 2)
+
+    # Получаем ограничивающий прямоугольник (bbox) для рисуемого текста
+    bbox = draw.textbbox((0, 0), char, font=font)
+
+    # Рассчитываем начальные координаты для центрирования текста
+    start_x = (img.width - bbox[2] - bbox[0]) / 2
+    start_y = (img.height - bbox[3] - bbox[1]) / 2
+
+    # Рисуем текст по центру изображения
+    draw.text((start_x, start_y), char, font=font, fill=0)
+
+    # Обрезаем изображение, оставляя заданный отступ сверху, снизу и по бокам
+    img = img.crop((pad, pad, size[0] + pad, size[1] + pad + bottom_pad - pad))
     return img
+
+
 
