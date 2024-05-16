@@ -17,3 +17,6 @@ dset:   # leave blank
     data_dir: mxfont/data/ttfs/val  # path to .ttf files for the validation
     source_font: mxfont/data/ttfs/val/arial.ttf   # path to the .ttf file used as the source font during the validation
 
+early_stopping:
+  patience: 5
+  min_delta: 0.001
