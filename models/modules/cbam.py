@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from .blocks import LinearBlock
 
 class BasicConv(nn.Module):
     def __init__(self, in_planes, out_planes, kernel_size, stride=1, padding=0, dilation=1, groups=1, relu=True, bn=True, bias=False):
@@ -31,15 +32,17 @@ class Flatten(nn.Module):
 
 
 class ChannelGate(nn.Module):
-    def __init__(self, gate_channels, reduction_ratio=16, pool_types=['avg', 'max']):
+    def __init__(self, gate_channels, reduction_ratio=16, pool_types=['avg', 'max'], num_heads=4):
         super(ChannelGate, self).__init__()
         self.gate_channels = gate_channels
-        self.mlp = nn.Sequential(
-            Flatten(),
-            nn.Linear(gate_channels, gate_channels // reduction_ratio),
-            nn.ReLU(),
-            nn.Linear(gate_channels // reduction_ratio, gate_channels)
-            )
+        self.num_heads = num_heads
+        self.mlps = nn.ModuleList([
+            nn.Sequential(
+                Flatten(),
+                LinearBlock(gate_channels, gate_channels // reduction_ratio),
+                LinearBlock(gate_channels // reduction_ratio, gate_channels)
+            ) for _ in range(num_heads)
+        ])
         self.pool_types = pool_types
 
     def forward(self, x):
@@ -47,25 +50,18 @@ class ChannelGate(nn.Module):
         for pool_type in self.pool_types:
             if pool_type == 'avg':
                 avg_pool = F.avg_pool2d(x, (x.size(2), x.size(3)), stride=(x.size(2), x.size(3)))
-                channel_att_raw = self.mlp(avg_pool)
+                channel_att_raw = torch.cat([mlp(avg_pool) for mlp in self.mlps], dim=1)
             elif pool_type == 'max':
                 max_pool = F.max_pool2d(x, (x.size(2), x.size(3)), stride=(x.size(2), x.size(3)))
-                channel_att_raw = self.mlp(max_pool)
-            elif pool_type == 'lp':
-                lp_pool = F.lp_pool2d(x, 2, (x.size(2), x.size(3)), stride=(x.size(2), x.size(3)))
-                channel_att_raw = self.mlp(lp_pool)
-            elif pool_type == 'lse':
-                # LSE pool only
-                lse_pool = logsumexp_2d(x)
-                channel_att_raw = self.mlp(lse_pool)
+                channel_att_raw = torch.cat([mlp(max_pool) for mlp in self.mlps], dim=1)
 
-            if channel_att_sum is None:
-                channel_att_sum = channel_att_raw
-            else:
-                channel_att_sum = channel_att_sum + channel_att_raw
+        # Reshape and apply softmax across heads
+        channel_att_raw = channel_att_raw.view(x.size(0), self.num_heads, self.gate_channels, 1, 1)
+        scale = torch.softmax(channel_att_raw, dim=1)
 
-        scale = torch.sigmoid(channel_att_sum).unsqueeze(2).unsqueeze(3).expand_as(x)
-        return x * scale
+        # Apply attention to input
+        out = (x.unsqueeze(1) * scale).sum(dim=1)
+        return out
 
 
 def logsumexp_2d(tensor):
@@ -94,10 +90,11 @@ class SpatialGate(nn.Module):
         return x * scale
 
 
-class CBAM(nn.Module):
-    def __init__(self, gate_channels, reduction_ratio=16, pool_types=['avg', 'max'], no_spatial=False):
-        super(CBAM, self).__init__()
-        self.ChannelGate = ChannelGate(gate_channels, reduction_ratio, pool_types)
+
+class MultiHeadCBAM(nn.Module):
+    def __init__(self, gate_channels, reduction_ratio=16, pool_types=['avg', 'max'], no_spatial=False, num_heads=4):
+        super(MultiHeadCBAM, self).__init__()
+        self.ChannelGate = ChannelGate(gate_channels, reduction_ratio, pool_types, num_heads)
         self.no_spatial = no_spatial
         if not no_spatial:
             self.SpatialGate = SpatialGate()

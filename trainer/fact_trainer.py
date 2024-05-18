@@ -1,19 +1,26 @@
+"""
+MX-Font
+Copyright (c) 2021-present NAVER Corp.
+MIT license
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 from .base_trainer import BaseTrainer
 from .trainer_utils import cyclize, binarize_labels, expert_assign
 from .hsic import RbfHSIC
+
 import utils
 from itertools import combinations
-from torch.utils.tensorboard import SummaryWriter
+
 
 class FactTrainer(BaseTrainer):
     def __init__(self, gen, disc, g_optim, d_optim, aux_clf, ac_optim,
                  writer, logger, evaluator, test_loader, cfg):
         super().__init__(gen, disc, g_optim, d_optim, aux_clf, ac_optim,
                          writer, logger, evaluator, test_loader, cfg)
-        self.writer = SummaryWriter(log_dir=cfg.work_dir / "tensorboard")
 
     def sync_g_ema(self, style_imgs, char_imgs):
         org_train_mode = self.gen_ema.training
@@ -23,6 +30,7 @@ class FactTrainer(BaseTrainer):
         self.gen_ema.train(org_train_mode)
 
     def train(self, loader, st_step=0, max_step=100000):
+
         self.gen.train()
         if self.disc is not None:
             self.disc.train()
@@ -43,11 +51,6 @@ class FactTrainer(BaseTrainer):
 
         self.logger.info("Start training ...")
 
-        best_val_loss = float('inf')
-        patience_counter = 0
-        early_stopping_patience = self.cfg.early_stopping['patience']
-        early_stopping_min_delta = self.cfg.early_stopping['min_delta']
-
         for batch in cyclize(loader):
             epoch = self.step // len(loader)
             if self.cfg.use_ddp and (self.step % len(loader)) == 0:
@@ -63,7 +66,7 @@ class FactTrainer(BaseTrainer):
             trg_imgs = batch["trg_imgs"].cuda()
             trg_fids = batch["trg_fids"].cuda()
             trg_cids = batch["trg_cids"].cuda()
-            trg_decs = batch["trg_decs"].cuda()
+            trg_decs = batch["trg_decs"]
 
             ##############################################################
             # infer
@@ -88,14 +91,16 @@ class FactTrainer(BaseTrainer):
                 [style_facts_s["skip"], style_facts_c["skip"]],
                 [char_facts_s["last"], char_facts_c["last"]],
                 [char_facts_s["skip"], char_facts_c["skip"]],
-            )
+                                  )
 
             mean_style_facts = {k: utils.add_dim_and_reshape(v, 0, (-1, n_s)).mean(1) for k, v in style_facts_s.items()}
             mean_char_facts = {k: utils.add_dim_and_reshape(v, 0, (-1, n_c)).mean(1) for k, v in char_facts_c.items()}
             gen_feats = self.gen.defactorize([mean_style_facts, mean_char_facts])
             gen_imgs = self.gen.decode(gen_feats)
 
-            stats.updates({"B": B})
+            stats.updates({
+                "B": B,
+            })
 
             real_font, real_uni, *real_feats = self.disc(
                 trg_imgs, trg_fids, trg_cids, out_feats=self.cfg['fm_layers']
@@ -179,7 +184,7 @@ class FactTrainer(BaseTrainer):
 
                     nrow = len(trg_imgs)
                     grid = utils.make_comparable_grid(trg_imgs.detach().cpu(), gen_imgs.detach().cpu(), nrow=nrow)
-                    self.writer.add_image("last", grid, self.step)
+                    self.writer.add_image("last", grid)
 
                 if self.step > 0 and self.step % self.cfg.val_freq == 0:
                     epoch = self.step / len(loader)
@@ -191,17 +196,6 @@ class FactTrainer(BaseTrainer):
                     self.evaluator.comparable_val_saveimg(self.gen_ema, self.test_loader, self.step, n_row=self.test_n_row)
 
                     self.save(loss_dic['g_total'], self.cfg.save, self.cfg.get('save_freq', self.cfg.val_freq))
-
-                    # Early stopping
-                    val_loss = self.evaluator.evaluate(self.gen_ema, self.test_loader, self.step)
-                    if val_loss < best_val_loss - early_stopping_min_delta:
-                        best_val_loss = val_loss
-                        patience_counter = 0
-                    else:
-                        patience_counter += 1
-                        if patience_counter >= early_stopping_patience:
-                            self.logger.info("Early stopping triggered.")
-                            break
             else:
                 pass
 

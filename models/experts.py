@@ -9,7 +9,7 @@ from functools import partial
 import torch
 import torch.nn as nn
 
-from .modules import ResBlock, CBAM
+from .modules import ResBlock, MultiHeadCBAM
 
 
 class SingleExpert(nn.Module):
@@ -18,6 +18,7 @@ class SingleExpert(nn.Module):
 
         self.layers = nn.ModuleList(layers)
         self.skip_idx = skip_idx
+
 
     def forward(self, x):
         ret = {}
@@ -58,10 +59,10 @@ def exp_builder(C, n_experts, norm='none', activ='relu', pad_type='reflect', ski
 
     experts = [[
             ResBlk(C*4, C*4, 3, 1),
-            CBAM(C*4),
+            MultiHeadCBAM(C*4),
             ResBlk(C*4, C*4, 3, 1),
             ResBlk(C*4, C*8, 3, 1, downsample=True),  # 16x16
-            CBAM(C*8),
+            MultiHeadCBAM(C*8),
             ResBlk(C*8, C*8)] for _ in range(n_experts)]
 
     out_shape = (C*8, 16, 16)

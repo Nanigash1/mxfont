@@ -8,12 +8,11 @@ import json
 import sys
 from pathlib import Path
 import argparse
-import time
-from tqdm import tqdm
 
 import os
 
 import torch
+
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
@@ -29,7 +28,6 @@ from models import Generator, disc_builder, aux_clf_builder
 from models.modules import weights_init
 from trainer import FactTrainer, Evaluator, load_checkpoint
 from datasets import get_trn_loader, get_val_loader
-from torch.utils.tensorboard import SummaryWriter  # Import TensorBoard SummaryWriter
 
 
 def setup_args_and_config():
@@ -113,7 +111,7 @@ def train(args, cfg, ddp_gpu=-1):
 
     image_scale = 0.5
     image_path = cfg.work_dir / "images"
-    writer = SummaryWriter(log_dir=str(cfg.work_dir / "tensorboard"))  # Set up TensorBoard writer
+    writer = utils.DiskWriter(image_path, scale=image_scale)
     cfg.tb_freq = -1
 
     args_str = dump_args(args)
@@ -183,53 +181,8 @@ def train(args, cfg, ddp_gpu=-1):
     trainer = FactTrainer(gen, disc, g_optim, d_optim, aux_clf, ac_optim, writer, logger,
                           evaluator, test_loader, cfg)
 
-    # Progress bar setup
-    total_steps = cfg.max_iter
-    best_val_loss = float('inf')
-    patience_counter = 0
-    early_stopping_patience = cfg.get('early_stopping', {}).get('patience', 5)
-    early_stopping_min_delta = cfg.get('early_stopping', {}).get('min_delta', 0)
+    trainer.train(trn_loader, st_step, cfg.max_iter)
 
-    with tqdm(total=total_steps, desc='Training Progress', unit='step') as pbar:
-        for current_step in range(st_step, total_steps):
-            start_time = time.time()
-            trainer.train(trn_loader, current_step, current_step + 1)
-            end_time = time.time()
-
-            elapsed_time = end_time - start_time
-            estimated_time_remaining = (total_steps - current_step - 1) * elapsed_time
-
-            pbar.set_postfix({
-                'Elapsed Time': f'{elapsed_time:.2f}s',
-                'ETA': f'{estimated_time_remaining / 3600:.2f}h'
-            })
-            pbar.update(1)
-
-            if current_step > 0 and current_step % cfg.save_freq == 0:
-                trainer.save(current_step)
-
-            if current_step > 0 and current_step % cfg.val_freq == 0:
-                val_loss = trainer.validate(current_step)
-
-                # Early stopping check
-                if val_loss < best_val_loss - early_stopping_min_delta:
-                    best_val_loss = val_loss
-                    patience_counter = 0
-                else:
-                    patience_counter += 1
-
-                if patience_counter >= early_stopping_patience:
-                    logger.info("Early stopping triggered. Ending training.")
-                    break
-
-                # Log losses and other metrics to TensorBoard
-                writer.add_scalar('Loss/val_loss', val_loss, current_step)
-
-            # Log training progress
-            writer.add_scalar('Loss/train_loss', trainer.current_loss, current_step)
-
-    logger.info("Training completed!")
-    writer.close()  # Close the TensorBoard writer
 
 
 def main():

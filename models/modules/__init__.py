@@ -10,8 +10,8 @@ from .blocks import (
     LinearBlock, ConvBlock, ResBlock
 )
 from .globalcontext import GCBlock
-from .cbam import CBAM
-
+#from .cbam import CBAM
+from .cbam import MultiHeadCBAM
 
 __all__ = ["weights_init", "spectral_norm", "norm_dispatch", "w_norm_dispatch", "activ_dispatch", "pad_dispatch",
            "Flatten", "LinearBlock", "ConvBlock", "ResBlock", "GCBlock", "CBAM"]
