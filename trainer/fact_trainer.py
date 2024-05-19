@@ -378,4 +378,4 @@ class FactTrainer(BaseTrainer):
             f"{'|L1':<12} {L.pixel.avg:7.3f} {'|INDP_EXP':<12} {L.indp_exp.avg:7.4f} {'|INDP_FACT':<12} {L.indp_fact.avg:7.4f} {'|PERCEPT':<12} {L.perceptual.avg:7.4f}"  # Add this line
         )
 
-        )
+        
