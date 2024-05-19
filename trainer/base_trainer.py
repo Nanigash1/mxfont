@@ -99,6 +99,18 @@ class BaseTrainer:
         )
 
         return loss
+    
+    def add_perceptual_loss(self, out, target):
+        from torchvision.models import vgg16
+        vgg = vgg16(pretrained=True).features.cuda().eval()
+        for param in vgg.parameters():
+            param.requires_grad_(False)
+
+        loss = self.add_loss(
+            (vgg(out), vgg(target)), self.g_losses, "perceptual", self.cfg.get("perceptual_w", 0.01), F.l1_loss
+        )
+        return loss
+
 
     def add_gan_g_loss(self, *fakes):
         loss = self.add_loss(

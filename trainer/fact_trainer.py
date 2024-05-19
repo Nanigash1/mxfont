@@ -51,7 +51,17 @@ class FactTrainer(BaseTrainer):
 
         self.logger.info("Start training ...")
 
-        for batch in cyclize(loader):
+
+        loader_iter = iter(cyclize(loader))  # Create an iterator for the cycled loader
+        for _ in range(st_step, max_step):
+            try:
+                batch = next(loader_iter)
+            except StopIteration:
+                loader_iter = iter(cyclize(loader))  # Reset the iterator if it's exhausted
+                batch = next(loader_iter)
+
+            
+
             epoch = self.step // len(loader)
             if self.cfg.use_ddp and (self.step % len(loader)) == 0:
                 loader.sampler.set_epoch(epoch)
@@ -118,7 +128,11 @@ class FactTrainer(BaseTrainer):
             )
             self.add_gan_g_loss(fake_font, fake_uni)
 
-            self.add_fm_loss(real_feats, fake_feats)
+            # ... (rest of the code)
+
+            if self.step % 2 == 0:  # Apply feature matching loss every other step
+                self.add_fm_loss(real_feats, fake_feats)
+
 
             def racc(x):
                 return (x > 0.).float().mean().item()
@@ -138,7 +152,9 @@ class FactTrainer(BaseTrainer):
                 'fake_uni_acc': facc(fake_uni)
             }, B)
 
+
             self.add_pixel_loss(gen_imgs, trg_imgs)
+            self.add_perceptual_loss(gen_imgs, trg_imgs)  # Add perceptual loss
 
             self.g_optim.zero_grad()
 

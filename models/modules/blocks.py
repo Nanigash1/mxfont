@@ -158,6 +158,10 @@ class ResBlock(nn.Module):
     def __init__(self, C_in, C_out, kernel_size=3, padding=1, upsample=False, downsample=False,
                  norm='none', w_norm='none', activ='relu', pad_type='zero', dropout=0.,
                  scale_var=False):
+        # ... (rest of the code)
+        if dropout > 0.:
+            self.dropout = nn.Dropout2d(p=dropout)  # Add dropout layer
+
         assert not (upsample and downsample)
         super().__init__()
         w_norm = w_norm_dispatch(w_norm)
@@ -187,6 +191,8 @@ class ResBlock(nn.Module):
         out = x
 
         out = self.conv1(out)
+        if hasattr(self, 'dropout'):
+            out = self.dropout(out)  # Apply dropout after the first convolution
         out = self.conv2(out)
 
         if self.downsample:

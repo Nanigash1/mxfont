@@ -81,7 +81,7 @@ ac_gen_w: 1.0
 ac_cross_w: 1.0
 indp_exp_w: 1.0
 indp_fact_w: 1.0
-
+perceptual_w: 0.01
 # etc
 save: all-last
 print_freq: 10

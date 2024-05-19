@@ -84,8 +84,9 @@ def disc_builder(C, n_fonts, n_chars, activ='relu', gap_activ='relu', w_norm='sp
                  pad_type='reflect', res_scale_var=False):
     ConvBlk = partial(ConvBlock, w_norm=w_norm, activ=activ, pad_type=pad_type)
     ResBlk = partial(
-        ResBlock, w_norm=w_norm, activ=activ, pad_type=pad_type, scale_var=res_scale_var
-    )
+        ResBlock, w_norm=w_norm, activ=activ, pad_type=pad_type, scale_var=res_scale_var, dropout=0.2
+    )  # Added dropout
+
     feats = [
         ConvBlk(1, C, stride=2, activ='none'),  # 64x64 (stirde==2)
         ResBlk(C*1, C*2, downsample=True),    # 32x32
