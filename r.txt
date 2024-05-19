@@ -1,9 +1,0 @@
-sconf
-numpy
-scipy
-scikit-image
-tqdm
-jsonlib-python3
-fonttools
-tensorflow
-tensorboard
