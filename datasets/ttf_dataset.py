@@ -66,11 +66,12 @@ class TTFTrainDataset(Dataset):
         trg_img = self.transform(render(font, char))
         trg_dec = [self.primals.index(x) for x in self.decomposition[char]]
 
-        style_chars = sample([c for c in self.key_char_dict[key] if c != char], self.n_in_s)
+        style_chars = sample(self.key_char_dict[key], self.n_in_s)
         style_imgs = torch.stack([self.transform(render(font, c)) for c in style_chars])
         style_decs = [[self.primals.index(x) for x in self.decomposition[c]] for c in style_chars]
-
-        char_keys = sample([k for k in self.char_key_dict[char] if k != key], self.n_in_c)
+        
+        
+        char_keys = sample(self.char_key_dict[char], self.n_in_c)
 
         char_imgs = torch.stack([self.transform(render(self.key_font_dict[k], char)) for k in char_keys])
         char_decs = [trg_dec] * self.n_in_c
@@ -237,12 +238,13 @@ def load_data_list(data_dir, char_filter=None):
         else:
             # Если ни одна кодировка не работает, генерируем исключение
             raise ValueError("Не удалось прочитать файл с использованием доступных кодировок")
-        english_chars = list(range(65, 91)) + list(range(97, 123)) # A-Z, a-z
-        russian_chars = list(range(0x0410, 0x0450))+[0x0401, 0x0451]  # А-я
-        kazakh_chars = [0x04D8, 0x04D9, 0x0492, 0x0493, 0x049A, 0x049B, 0x04A2, 0x04A3, 0x04E8, 0x04E9, 0x04B0, 0x04B1, 0x04AE, 0x04AF, 0x04BA, 0x04BB, 0x0406, 0x0456]
-        char_filter = [chr(i) for i in english_chars+russian_chars+kazakh_chars]
+        
         if char_filter is not None:
             chars = set(chars).intersection(char_filter)
+        else:
+            # If no filter is provided, use characters from the decomposition file
+            chars = set(chars).intersection(decomposition.keys())  
+
         key_char_dict[font_path.stem] = list(chars)
 
     return key_font_dict, key_char_dict

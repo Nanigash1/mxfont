@@ -6,10 +6,10 @@ batch_size: 8
 resume: 
 force_resume: False
 work_dir: mxfont/result
-max_iter: 50000
+max_iter: 100000
 seed: 2
-g_lr: 2e-4
-d_lr: 1e-3
+g_lr: 1e-4
+d_lr: 5e-4
 ac_lr: 2e-4
 n_workers: 8
 adam_betas: [0.0, 0.9]

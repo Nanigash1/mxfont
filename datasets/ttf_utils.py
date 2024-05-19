@@ -19,13 +19,14 @@ def get_filtered_chars(fontpath):
     ttf = read_font(fontpath)
     defined_chars = get_defined_chars(fontpath)
     avail_chars = []
-
     for char in defined_chars:
-        img = np.array(render(ttf, char))
-        if img.mean() == 255.:
-            pass
-        else:
-            avail_chars.append(char.encode('utf-16', 'surrogatepass').decode('utf-16'))
+        try:
+            img = np.array(render(ttf, char))
+            if img.mean() < 255.:  # Threshold for non-blank characters
+                avail_chars.append(char)
+        except:
+            pass  # Skip characters that cause rendering errors
+
 
     return avail_chars
 

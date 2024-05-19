@@ -23,8 +23,9 @@ class Generator(nn.Module):
         self.n_experts = self.experts.n_experts
         self.feat_shape = {"last": self.experts.out_shape, "skip": self.experts.skip_shape}
 
-        self.fact_blocks = {}
-        self.recon_blocks = {}
+        self.fact_blocks = nn.ModuleDict()  # Initialize as ModuleDict
+        self.recon_blocks = nn.ModuleDict() # Initialize as ModuleDict
+
 
         self.emb_num = emb_num
         for _key in self.feat_shape:

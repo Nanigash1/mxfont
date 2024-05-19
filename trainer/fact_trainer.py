@@ -284,9 +284,10 @@ class FactTrainer(BaseTrainer):
         ac_loss_c, cross_ac_loss_c, acc_c = self.infer_comp_ac(char_facts, comp_ids)
 
         self.ac_losses["ac_s"] = ac_loss_s * self.cfg["ac_w"]
-        self.ac_losses["ac_c"] = ac_loss_c * self.cfg["ac_w"]
+        self.ac_losses["ac_c"] = ac_loss_c * self.cfg["ac_w"] * 0.8  # Reduced weight for component loss
         self.ac_losses["cross_ac_s"] = cross_ac_loss_s * self.cfg["ac_w"] * self.cfg["ac_cross_w"]
-        self.ac_losses["cross_ac_c"] = cross_ac_loss_c * self.cfg["ac_w"] * self.cfg["ac_cross_w"]
+        self.ac_losses["cross_ac_c"] = cross_ac_loss_c * self.cfg["ac_w"] * self.cfg["ac_cross_w"] * 0.8  # Reduced weight for component loss
+
         stats.ac_acc_s.update(acc_s, len(style_ids))
         stats.ac_acc_c.update(acc_c, sum([*map(len, comp_ids)]))
 

@@ -58,12 +58,14 @@ def exp_builder(C, n_experts, norm='none', activ='relu', pad_type='reflect', ski
     ResBlk = partial(ResBlock, norm=norm, activ=activ, pad_type=pad_type, scale_var=skip_scale_var)
 
     experts = [[
-            ResBlk(C*4, C*4, 3, 1),
-            MultiHeadCBAM(C*4),
-            ResBlk(C*4, C*4, 3, 1),
-            ResBlk(C*4, C*8, 3, 1, downsample=True),  # 16x16
-            MultiHeadCBAM(C*8),
-            ResBlk(C*8, C*8)] for _ in range(n_experts)]
+        ResBlk(C*4, C*4, 3, 1),
+        MultiHeadCBAM(C*4, num_heads=8),  # Increased attention heads
+        ResBlk(C*4, C*4, 3, 1),
+        ResBlk(C*4, C*8, 3, 1, downsample=True),  # 16x16
+        MultiHeadCBAM(C*8, num_heads=8),  # Increased attention heads
+        ResBlk(C*8, C*8, 3, 1),  # Additional ResBlock
+        ResBlk(C*8, C*8, 3, 1)] for _ in range(n_experts)]
+
 
     out_shape = (C*8, 16, 16)
     skip_idx = 2
