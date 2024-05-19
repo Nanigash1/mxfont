@@ -158,7 +158,7 @@ class ResBlock(nn.Module):
     def __init__(self, C_in, C_out, kernel_size=3, padding=1, upsample=False, downsample=False,
                  norm='none', w_norm='none', activ='relu', pad_type='zero', dropout=0.,
                  scale_var=False):
-        # ... (rest of the code)
+        super().__init__()  # Call super().__init__() before initializing other layers
         if dropout > 0.:
             self.dropout = nn.Dropout2d(p=dropout)  # Add dropout layer
 

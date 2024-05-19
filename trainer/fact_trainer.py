@@ -36,9 +36,11 @@ class FactTrainer(BaseTrainer):
             self.disc.train()
 
         # loss stats
+        # loss stats
         losses = utils.AverageMeters("g_total", "pixel", "disc", "gen", "fm", "indp_exp", "indp_fact",
                                      "ac_s", "ac_c", "cross_ac_s", "cross_ac_c",
-                                     "ac_gen_s", "ac_gen_c", "cross_ac_gen_s", "cross_ac_gen_c")
+                                     "ac_gen_s", "ac_gen_c", "cross_ac_gen_s", "cross_ac_gen_c", "perceptual")  # Add 'perceptual' here
+
         # discriminator stats
         discs = utils.AverageMeters("real_font", "real_uni", "fake_font", "fake_uni",
                                     "real_font_acc", "real_uni_acc",
@@ -373,5 +375,7 @@ class FactTrainer(BaseTrainer):
             f"{'|D':<12} {L.disc.avg:7.3f} {'|G':<12} {L.gen.avg:7.3f} {'|FM':<12} {L.fm.avg:7.3f} {'|R_font':<12} {D.real_font_acc.avg:7.3f} {'|F_font':<12} {D.fake_font_acc.avg:7.3f} {'|R_uni':<12} {D.real_uni_acc.avg:7.3f} {'|F_uni':<12} {D.fake_uni_acc.avg:7.3f}\n"
             f"{'|AC_s':<12} {L.ac_s.avg:7.3f} {'|AC_c':<12} {L.ac_c.avg:7.3f} {'|cr_AC_s':<12} {L.cross_ac_s.avg:7.3f} {'|cr_AC_c':<12} {L.cross_ac_c.avg:7.3f} {'|AC_acc_s':<12} {S.ac_acc_s.avg:7.1%} {'|AC_acc_c':<12} {S.ac_acc_c.avg:7.1%}\n"
             f"{'|AC_g_s':<12} {L.ac_gen_s.avg:7.3f} {'|AC_g_c':<12} {L.ac_gen_c.avg:7.3f} {'|cr_AC_g_s':<12} {L.cross_ac_gen_s.avg:7.3f} {'|cr_AC_g_c':<12} {L.cross_ac_gen_c.avg:7.3f} {'|AC_g_acc_s':<12} {S.ac_gen_acc_s.avg:7.1%} {'|AC_g_acc_c':<12} {S.ac_gen_acc_c.avg:7.1%}\n"
-            f"{'|L1':<12} {L.pixel.avg:7.3f} {'|INDP_EXP':<12} {L.indp_exp.avg:7.4f} {'|INDP_FACT':<12} {L.indp_fact.avg:7.4f}"
+            f"{'|L1':<12} {L.pixel.avg:7.3f} {'|INDP_EXP':<12} {L.indp_exp.avg:7.4f} {'|INDP_FACT':<12} {L.indp_fact.avg:7.4f} {'|PERCEPT':<12} {L.perceptual.avg:7.4f}"  # Add this line
+        )
+
         )

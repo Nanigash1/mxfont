@@ -102,14 +102,23 @@ class BaseTrainer:
     
     def add_perceptual_loss(self, out, target):
         from torchvision.models import vgg16
-        vgg = vgg16(pretrained=True).features.cuda().eval()
+        from torchvision.transforms.functional import rgb_to_grayscale
+        from torchvision.models import VGG16_Weights
+        vgg = vgg16(weights=VGG16_Weights.DEFAULT).features.cuda().eval()
+
         for param in vgg.parameters():
             param.requires_grad_(False)
 
+        # Convert grayscale input to 3-channel (RGB)
+        out = out.repeat(1, 3, 1, 1) 
+        target = target.repeat(1, 3, 1, 1)
+
         loss = self.add_loss(
-            (vgg(out), vgg(target)), self.g_losses, "perceptual", self.cfg.get("perceptual_w", 0.01), F.l1_loss
+            (vgg(out), vgg(target)), self.g_losses, "perceptual", self.cfg["perceptual_w"], F.l1_loss
         )
+
         return loss
+
 
 
     def add_gan_g_loss(self, *fakes):
