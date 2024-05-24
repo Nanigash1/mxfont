@@ -92,7 +92,8 @@ def disc_builder(C, n_fonts, n_chars, activ='relu', gap_activ='relu', w_norm='sp
         ResBlk(C*1, C*2, downsample=True),    # 32x32
         ResBlk(C*2, C*4, downsample=True),    # 16x16
         ResBlk(C*4, C*8, downsample=True),    # 8x8
-        ResBlk(C*8, C*8, downsample=False),   # 8x8 (removed one layer)
+        ResBlk(C * 8, C * 16, downsample=False),  # 8x8
+        ResBlk(C * 16, C * 16, downsample=False),  # 8x8
     ]
 
 

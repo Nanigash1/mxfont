@@ -16,7 +16,7 @@ from .ttf_utils import read_font, render
 
 class TTFTrainDataset(Dataset):
     def __init__(self, data_dir, primals, decomposition, transform=None,
-                 n_in_s=3, n_in_c=3, source_font=None):
+                 n_in_s=5, n_in_c=3, source_font=None):
 
         self.data_dir = data_dir
         self.primals = primals
