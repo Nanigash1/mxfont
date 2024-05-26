@@ -1,7 +1,7 @@
 use_ddp: False
 port:
 
-batch_size: 16
+batch_size: 12
 
 resume: 
 force_resume: False
