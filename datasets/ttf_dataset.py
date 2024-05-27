@@ -13,7 +13,6 @@ from torch.utils.data import Dataset
 
 from .ttf_utils import read_font, render
 
-
 class TTFTrainDataset(Dataset):
     def __init__(self, data_dir, primals, decomposition, transform=None,
                  n_in_s=5, n_in_c=3, source_font=None):
@@ -63,17 +62,35 @@ class TTFTrainDataset(Dataset):
         fidx = self.keys.index(key)
         cidx = self.chars.index(char)
 
-        trg_img = self.transform(render(font, char))
+        trg_img = render(font, char)
+        if trg_img is None:
+            return self.__getitem__((index + 1) % len(self.data_list))
+        trg_img = self.transform(trg_img)
+        
         trg_dec = [self.primals.index(x) for x in self.decomposition[char]]
 
         style_chars = sample(self.key_char_dict[key], self.n_in_s)
-        style_imgs = torch.stack([self.transform(render(font, c)) for c in style_chars])
-        style_decs = [[self.primals.index(x) for x in self.decomposition[c]] for c in style_chars]
-        
-        
-        char_keys = sample(self.char_key_dict[char], self.n_in_c)
+        style_imgs = []
+        for c in style_chars:
+            img = render(font, c)
+            if img is not None:
+                style_imgs.append(self.transform(img))
+        if len(style_imgs) < self.n_in_s:
+            return self.__getitem__((index + 1) % len(self.data_list))
+        style_imgs = torch.stack(style_imgs)
 
-        char_imgs = torch.stack([self.transform(render(self.key_font_dict[k], char)) for k in char_keys])
+        style_decs = [[self.primals.index(x) for x in self.decomposition[c]] for c in style_chars]
+
+        char_keys = sample(self.char_key_dict[char], self.n_in_c)
+        char_imgs = []
+        for k in char_keys:
+            img = render(self.key_font_dict[k], char)
+            if img is not None:
+                char_imgs.append(self.transform(img))
+        if len(char_imgs) < self.n_in_c:
+            return self.__getitem__((index + 1) % len(self.data_list))
+        char_imgs = torch.stack(char_imgs)
+
         char_decs = [trg_dec] * self.n_in_c
         char_fids = [self.keys.index(_k) for _k in char_keys]
 
@@ -118,7 +135,6 @@ class TTFTrainDataset(Dataset):
 
         return ret
 
-
 class TTFValDataset(Dataset):
     def __init__(self, data_dir, source_font, char_filter, n_ref=4, n_gen=20, transform=None):
 
@@ -153,8 +169,14 @@ class TTFValDataset(Dataset):
         key, char = self.data_list[index]
         font = self.key_font_dict[key]
 
-        ref_imgs = torch.stack([self.transform(render(font, c))
-                                for c in self.ref_chars])
+        ref_imgs = []
+        for c in self.ref_chars:
+            img = render(font, c)
+            if img is not None:
+                ref_imgs.append(self.transform(img))
+        if len(ref_imgs) < self.n_ref:
+            return self.__getitem__((index + 1) % len(self.data_list))
+        ref_imgs = torch.stack(ref_imgs)
 
         if self.source_font is not None:
             source_font = self.source_font
@@ -162,8 +184,15 @@ class TTFValDataset(Dataset):
             source_key = random.choice(self.char_key_dict[char])
             source_font = self.key_font_dict[source_key]
 
-        source_img = self.transform(render(source_font, char))
-        trg_img = self.transform(render(font, char))
+        source_img = render(source_font, char)
+        if source_img is None:
+            return self.__getitem__((index + 1) % len(self.data_list))
+        source_img = self.transform(source_img)
+
+        trg_img = render(font, char)
+        if trg_img is None:
+            return self.__getitem__((index + 1) % len(self.data_list))
+        trg_img = self.transform(trg_img)
 
         ret = {
             "style_imgs": ref_imgs,
@@ -248,4 +277,3 @@ def load_data_list(data_dir, char_filter=None):
         key_char_dict[font_path.stem] = list(chars)
 
     return key_font_dict, key_char_dict
-

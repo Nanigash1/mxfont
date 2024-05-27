@@ -21,7 +21,6 @@ def get_defined_chars(fontfile):
         logging.error(f"Error reading font file {fontfile}: {e}")
         return []
 
-
 def get_filtered_chars(fontpath):
     try:
         ttf = read_font(fontpath)
@@ -41,7 +40,6 @@ def get_filtered_chars(fontpath):
 
     return avail_chars
 
-
 def read_font(fontfile, size=150):
     try:
         font = ImageFont.truetype(str(fontfile), size=size)
@@ -49,7 +47,6 @@ def read_font(fontfile, size=150):
     except Exception as e:
         logging.error(f"Error reading font {fontfile}: {e}")
         raise
-
 
 def render(font, char, size=(128, 128), pad=20, bottom_pad=20, scale=0.55):
     try:
@@ -76,4 +73,4 @@ def render(font, char, size=(128, 128), pad=20, bottom_pad=20, scale=0.55):
         return img
     except Exception as e:
         logging.error(f"Error rendering character '{char}' with font '{font.path}': {e}")
-        raise
+        return None
