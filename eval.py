@@ -36,7 +36,7 @@ def eval_ckpt():
     weight = torch.load(args.weight)
     if "generator_ema" in weight:
         weight = weight["generator_ema"]
-    gen.load_state_dict(weight)
+    gen.load_state_dict(weight, strict=False)
     test_dset, test_loader = get_test_loader(cfg, val_transform)
 
     for batch in test_loader:
