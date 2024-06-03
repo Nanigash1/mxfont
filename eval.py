@@ -30,9 +30,10 @@ def eval_ckpt():
         
     # Handle shape mismatch manually
     model_dict = gen.state_dict()
-    pretrained_dict = {k: v for k, v in weight.items() if k in model_dict and v.size() == model_dict[k].size()}
-    model_dict.update(pretrained_dict)
-    gen.load_state_dict(model_dict) # gen.load_state_dict(weight, strict=False)
+    gen.load_state_dict(weight)
+    # pretrained_dict = {k: v for k, v in weight.items() if k in model_dict and v.size() == model_dict[k].size()}
+    # model_dict.update(pretrained_dict)
+    # gen.load_state_dict(model_dict) 
 
     test_dset, test_loader = get_test_loader(cfg, val_transform)
 
