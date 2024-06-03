@@ -16,7 +16,6 @@ from .ttf_utils import get_filtered_chars, read_font, render
 
 class ImageTestDataset(Dataset):
     def __init__(self, data_dir, source_font, gen_chars_file=None, transform=None, extension="png"):
-
         self.data_dir = Path(data_dir)
         self.source_font = read_font(source_font)
         self.gen_chars = get_filtered_chars(source_font)
@@ -31,18 +30,23 @@ class ImageTestDataset(Dataset):
         self.transform = transform
 
     def load_data_list(self, data_dir, extension):
-        fonts = [x.name for x in data_dir.iterdir() if x.is_dir()]
-
+        fonts = [x.name for x in data_dir.iterdir() if x.is_dir() and not x.name.startswith('.')]
+        
         font_chars = {}
         for font in fonts:
-            chars = [x.name for x in (self.data_dir / font).glob(f"*.{extension}")]
+            chars = [x.stem for x in (self.data_dir / font).glob(f"*.{extension}")]
             font_chars[font] = chars
         return font_chars
 
     def __getitem__(self, index):
         font, char = self.data_list[index]
-        ref_imgs = torch.stack([self.transform(Image.open(str(self.data_dir / font / f"{rc}")))
-                                for rc in self.font_ref_chars[font]])
+        ref_imgs = [self.transform(Image.open(str(self.data_dir / font / f"{rc}.png")))
+                    for rc in self.font_ref_chars[font] if (self.data_dir / font / f"{rc}.png").exists()]
+
+        if not ref_imgs:
+            raise RuntimeError(f"No reference images found for font {font}.")
+
+        ref_imgs = torch.stack(ref_imgs)
         source_img = self.transform(render(self.source_font, char))
 
         ret = {
