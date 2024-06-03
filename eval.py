@@ -1,20 +1,11 @@
-"""
-MX-Font
-Copyright (c) 2021-present NAVER Corp.
-MIT license
-"""
-
 import argparse
 from pathlib import Path
-
 import torch
-
 from utils import refine, save_tensor_to_image
 from datasets import get_test_loader
 from models import Generator
 from sconf import Config
 from train import setup_transforms
-
 
 def eval_ckpt():
     parser = argparse.ArgumentParser()
@@ -36,7 +27,13 @@ def eval_ckpt():
     weight = torch.load(args.weight)
     if "generator_ema" in weight:
         weight = weight["generator_ema"]
-    gen.load_state_dict(weight, strict=False)
+        
+    # Handle shape mismatch manually
+    model_dict = gen.state_dict()
+    pretrained_dict = {k: v for k, v in weight.items() if k in model_dict and v.size() == model_dict[k].size()}
+    model_dict.update(pretrained_dict)
+    gen.load_state_dict(model_dict) # gen.load_state_dict(weight, strict=False)
+
     test_dset, test_loader = get_test_loader(cfg, val_transform)
 
     for batch in test_loader:
@@ -49,9 +46,9 @@ def eval_ckpt():
 
         for image, font, char in zip(refine(out), fonts, chars):
             (img_dir / font).mkdir(parents=True, exist_ok=True)
-            path = img_dir / font / f"{char}.png"
+            prefix = 'upper_' if char.isupper() else 'lower_'
+            path = img_dir / font / f"{prefix}{char}.png"
             save_tensor_to_image(image, path)
-
 
 if __name__ == "__main__":
     eval_ckpt()
