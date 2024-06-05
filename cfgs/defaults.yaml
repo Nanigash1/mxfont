@@ -67,8 +67,8 @@ ac_args:
   norm: in
   activ: relu
   pad_type: zero
-  conv_dropout: 0.3
-  clf_dropout: 0.2
+  conv_dropout: 0.1
+  clf_dropout: 0.1
 
 # losses
 pixel_loss_type: l1
@@ -81,7 +81,7 @@ ac_gen_w: 1.0
 ac_cross_w: 1.0
 indp_exp_w: 1.0
 indp_fact_w: 1.0
-perceptual_w: 0.01
+perceptual_w: 0.1
 # etc
 save: all-last
 print_freq: 100
